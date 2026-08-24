@@ -4,7 +4,7 @@ Level 01 retrieval-augmented generation project for answering operational questi
 
 ## Current milestone
 
-The service provides Spring Boot APIs for ingesting PDF/text runbooks and asking grounded questions. Uploaded documents are extracted page by page, split into deterministic overlapping chunks, embedded, and stored with source metadata. Development defaults to reproducible local embeddings and in-memory cosine retrieval; OpenAI embeddings can be enabled through environment configuration.
+The service provides Spring Boot APIs for ingesting PDF/text runbooks and asking grounded questions. Uploaded documents are extracted page by page, split into deterministic overlapping chunks, embedded, and stored with source metadata. Development defaults to reproducible local embeddings, in-memory cosine retrieval, and an extractive context-only answer. OpenAI embeddings and grounded LLM answers can be enabled through environment configuration.
 
 ### API
 
@@ -64,6 +64,16 @@ export OPENAI_API_KEY="your-key"
 export RAG_EMBEDDING_PROVIDER="openai"
 ```
 
+Enable OpenAI answer generation using the Responses API:
+
+```bash
+export OPENAI_API_KEY="your-key"
+export RAG_ANSWER_PROVIDER="openai"
+# Optional: export OPENAI_ANSWER_MODEL="gpt-5-mini"
+```
+
+The answer prompt treats retrieved text as untrusted data, prohibits outside knowledge, requires `[n]` chunk citations, and refuses to answer when the supplied context is insufficient. API responses also include document/page citation metadata.
+
 Run tests:
 
 ```bash
@@ -77,6 +87,7 @@ cd backend
 - [x] Deterministic chunking with document and page metadata
 - [x] Embedding generation
 - [x] Elasticsearch vector retrieval
-- LLM answer generation using retrieved context only
-- Source citations and retrieval evaluation
+- [x] LLM answer generation using retrieved context only
+- [x] Source citations and insufficient-context refusal
+- Retrieval evaluation
 - Angular chat interface
