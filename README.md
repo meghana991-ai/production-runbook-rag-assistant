@@ -48,6 +48,15 @@ Start local Elasticsearch:
 docker compose up -d
 ```
 
+Run the backend with Elasticsearch dense-vector storage and k-NN retrieval:
+
+```bash
+cd backend
+SPRING_PROFILES_ACTIVE=elasticsearch ./mvnw spring-boot:run
+```
+
+The service creates the `runbook-chunks` index automatically with a 256-dimension `dense_vector` field and cosine similarity. Override the connection with `ELASTICSEARCH_URL` and the index name with `ELASTICSEARCH_INDEX`.
+
 Enable OpenAI embeddings (never commit the key):
 
 ```bash
@@ -67,7 +76,7 @@ cd backend
 - [x] PDF and text ingestion
 - [x] Deterministic chunking with document and page metadata
 - [x] Embedding generation
-- Elasticsearch vector retrieval
+- [x] Elasticsearch vector retrieval
 - LLM answer generation using retrieved context only
 - Source citations and retrieval evaluation
 - Angular chat interface

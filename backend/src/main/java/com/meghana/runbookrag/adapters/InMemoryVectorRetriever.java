@@ -7,12 +7,14 @@ import com.meghana.runbookrag.ingestion.EmbeddedChunk;
 import com.meghana.runbookrag.ingestion.InMemoryChunkStore;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Profile;
 
 import java.util.Comparator;
 import java.util.List;
 
 @Primary
 @Component
+@Profile("!elasticsearch")
 public class InMemoryVectorRetriever implements Retriever {
 
     private final InMemoryChunkStore store;
