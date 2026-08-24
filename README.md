@@ -74,6 +74,25 @@ export RAG_ANSWER_PROVIDER="openai"
 
 The answer prompt treats retrieved text as untrusted data, prohibits outside knowledge, requires `[n]` chunk citations, and refuses to answer when the supplied context is insufficient. API responses also include document/page citation metadata.
 
+Evaluate retrieval quality against a labeled question set:
+
+```bash
+curl -X POST http://localhost:8080/api/v1/evaluations/retrieval \
+  -H "Content-Type: application/json" \
+  -d '{
+    "topK": 5,
+    "cases": [
+      {
+        "question": "How do I restart checkout-api?",
+        "expectedDocumentName": "checkout-runbook.pdf",
+        "expectedPageNumber": 3
+      }
+    ]
+  }'
+```
+
+The report includes Hit Rate@K, Mean Reciprocal Rank (MRR), and the first relevant rank for every question. Omit `expectedPageNumber` when any page in the expected document should count as relevant.
+
 Run tests:
 
 ```bash
@@ -89,5 +108,5 @@ cd backend
 - [x] Elasticsearch vector retrieval
 - [x] LLM answer generation using retrieved context only
 - [x] Source citations and insufficient-context refusal
-- Retrieval evaluation
+- [x] Retrieval evaluation with Hit Rate@K and MRR
 - Angular chat interface
