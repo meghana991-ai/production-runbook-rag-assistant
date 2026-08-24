@@ -13,7 +13,8 @@ class DocumentIngestionServiceTest {
 
     private final InMemoryChunkStore store = new InMemoryChunkStore();
     private final DocumentIngestionService service = new DocumentIngestionService(
-            List.of(new PlainTextExtractor()), new DeterministicChunker(), store);
+            List.of(new PlainTextExtractor()), new DeterministicChunker(), store,
+            inputs -> inputs.stream().map(input -> List.of(1.0, 0.0)).toList());
 
     @Test
     void ingestsTextAndRemovesPathFromFilename() {
@@ -27,7 +28,7 @@ class DocumentIngestionServiceTest {
         assertThat(result.pages()).isEqualTo(1);
         assertThat(result.chunks()).isEqualTo(1);
         assertThat(store.findAll()).singleElement()
-                .extracting(DocumentChunk::content)
+                .extracting(stored -> stored.chunk().content())
                 .isEqualTo("Restart checkout after checking dependencies.");
     }
 

@@ -4,7 +4,7 @@ Level 01 retrieval-augmented generation project for answering operational questi
 
 ## Current milestone
 
-The service provides Spring Boot APIs for ingesting PDF/text runbooks and asking grounded questions. Uploaded documents are extracted page by page, normalized, split into deterministic overlapping chunks, and stored with source metadata. The current in-memory store is an adapter that will be replaced by Elasticsearch in the next increment.
+The service provides Spring Boot APIs for ingesting PDF/text runbooks and asking grounded questions. Uploaded documents are extracted page by page, split into deterministic overlapping chunks, embedded, and stored with source metadata. Development defaults to reproducible local embeddings and in-memory cosine retrieval; OpenAI embeddings can be enabled through environment configuration.
 
 ### API
 
@@ -42,6 +42,19 @@ cd backend
 
 Health check: `GET http://localhost:8080/actuator/health`
 
+Start local Elasticsearch:
+
+```bash
+docker compose up -d
+```
+
+Enable OpenAI embeddings (never commit the key):
+
+```bash
+export OPENAI_API_KEY="your-key"
+export RAG_EMBEDDING_PROVIDER="openai"
+```
+
 Run tests:
 
 ```bash
@@ -53,7 +66,7 @@ cd backend
 
 - [x] PDF and text ingestion
 - [x] Deterministic chunking with document and page metadata
-- Embedding generation
+- [x] Embedding generation
 - Elasticsearch vector retrieval
 - LLM answer generation using retrieved context only
 - Source citations and retrieval evaluation

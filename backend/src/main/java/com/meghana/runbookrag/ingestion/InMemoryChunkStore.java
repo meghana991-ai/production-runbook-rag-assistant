@@ -8,14 +8,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Repository
 public class InMemoryChunkStore implements ChunkStore {
 
-    private final List<DocumentChunk> chunks = new CopyOnWriteArrayList<>();
+    private final List<EmbeddedChunk> chunks = new CopyOnWriteArrayList<>();
 
     @Override
-    public void saveAll(List<DocumentChunk> chunks) {
+    public void saveAll(List<EmbeddedChunk> chunks) {
         this.chunks.addAll(chunks);
     }
 
-    public List<DocumentChunk> findAll() {
+    public List<EmbeddedChunk> findAll() {
         return List.copyOf(chunks);
     }
 }
