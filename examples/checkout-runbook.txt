@@ -1,0 +1,16 @@
+Checkout API Recovery Runbook
+
+Symptoms
+The checkout API returns HTTP 503 responses or the Kubernetes deployment has unavailable replicas.
+
+Pre-checks
+Confirm the incident is limited to checkout-api. Check pod status and recent events in the production namespace. Do not restart healthy dependencies.
+
+Safe restart procedure
+Run: kubectl rollout restart deployment/checkout-api -n production
+Then run: kubectl rollout status deployment/checkout-api -n production --timeout=180s
+Confirm that all replicas are ready and the checkout health endpoint returns HTTP 200.
+
+Rollback
+If the rollout does not become healthy within three minutes, run: kubectl rollout undo deployment/checkout-api -n production
+Escalate to the checkout service owner and attach the pod events and deployment logs.
