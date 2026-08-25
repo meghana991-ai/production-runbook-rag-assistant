@@ -1,0 +1,54 @@
+<main class="shell">
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Runbook home"><span class="brand-mark">R</span><span>Runbook AI</span></a>
+    <span class="level-badge">Level 01 · RAG</span>
+  </header>
+  <section class="hero">
+    <div class="eyebrow"><span></span> Production knowledge, ready when you need it</div>
+    <h1>Ask your runbooks.<br><em>Get grounded answers.</em></h1>
+    <p>Upload an operational guide and ask a question. Every answer stays anchored to the source—with page-level citations you can verify.</p>
+  </section>
+  <section class="workspace" aria-label="Runbook assistant">
+    <aside class="upload-panel">
+      <div class="panel-heading"><span class="step">01</span><div><h2>Add knowledge</h2><p>PDF or plain text · 10 MB max</p></div></div>
+      <label class="drop-zone" [class.has-file]="selectedFile()" for="runbook-file">
+        <input id="runbook-file" type="file" accept=".pdf,.txt,application/pdf,text/plain" (change)="selectFile($event)">
+        <span class="upload-icon" aria-hidden="true">↑</span>
+        @if (selectedFile(); as file) { <strong>{{ file.name }}</strong><small>{{ formatBytes(file.size) }}</small> }
+        @else { <strong>Choose a runbook</strong><small>Click to browse your files</small> }
+      </label>
+      <button class="primary-button" type="button" [disabled]="!selectedFile() || uploading()" (click)="upload()">
+        @if (uploading()) { Indexing runbook… } @else { Upload & index }
+      </button>
+      @if (uploadMessage()) { <div class="status-message success" role="status">{{ uploadMessage() }}</div> }
+      @if (uploadError()) { <div class="status-message error" role="alert">{{ uploadError() }}</div> }
+    </aside>
+    <section class="chat-panel">
+      <div class="panel-heading"><span class="step">02</span><div><h2>Ask an operational question</h2><p>Answers are limited to indexed evidence</p></div></div>
+      <form (submit)="ask($event)">
+        <label for="question">Your question</label>
+        <div class="question-row">
+          <textarea id="question" name="question" rows="3" maxlength="1000" placeholder="How do I restart the checkout service safely?" [value]="question()" (input)="updateQuestion($event)"></textarea>
+          <button class="ask-button" type="submit" [disabled]="!question().trim() || asking()" aria-label="Ask question">
+            @if (asking()) { <span class="spinner"></span> } @else { <span>→</span> }
+          </button>
+        </div>
+      </form>
+      @if (answer(); as response) {
+        <article class="answer-card" [class.not-grounded]="!response.grounded">
+          <div class="answer-label"><span class="pulse"></span>{{ response.grounded ? 'Grounded answer' : 'Insufficient evidence' }}</div>
+          <p class="answer-text">{{ response.answer }}</p>
+          @if (response.citations.length) {
+            <div class="citations"><h3>Sources</h3>
+              @for (citation of response.citations; track citation.documentName + citation.pageNumber; let index = $index) {
+                <details><summary><span>[{{ index + 1 }}]</span> {{ citation.documentName }} · Page {{ citation.pageNumber }}</summary><p>{{ citation.excerpt }}</p></details>
+              }
+            </div>
+          }
+        </article>
+      } @else if (askError()) { <div class="empty-state error-state" role="alert"><span>!</span><p>{{ askError() }}</p></div> }
+      @else { <div class="empty-state"><span>⌁</span><p>Your cited answer will appear here.</p></div> }
+    </section>
+  </section>
+  <footer><span>Fixed ingestion</span><span>Vector retrieval</span><span>Context-only generation</span><span>Source citations</span></footer>
+</main>

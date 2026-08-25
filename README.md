@@ -42,6 +42,16 @@ cd backend
 
 Health check: `GET http://localhost:8080/actuator/health`
 
+Start the Angular interface in a second terminal:
+
+```bash
+cd frontend
+pnpm install
+pnpm start
+```
+
+Open `http://localhost:4200`. The development server proxies `/api` requests to the Spring Boot backend on port 8080.
+
 Start local Elasticsearch:
 
 ```bash
@@ -109,4 +119,4 @@ cd backend
 - [x] LLM answer generation using retrieved context only
 - [x] Source citations and insufficient-context refusal
 - [x] Retrieval evaluation with Hit Rate@K and MRR
-- Angular chat interface
+- [x] Angular document upload and cited-answer interface
